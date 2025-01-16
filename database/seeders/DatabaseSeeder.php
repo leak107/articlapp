@@ -13,11 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        if (User::query()->where('email', 'admin@articlapp')->doesntExist()) {
+            User::factory()->create([
+                'first_name' => 'articlapp',
+                'last_name' => '@admin',
+                'email' => 'admin@article.app',
+            ]);
+        }
     }
 }

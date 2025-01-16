@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('images', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->string('filename');
             $table->string('full_path');
             $table->string('mime_type');
             $table->decimal('size', 10, 2);
             $table->foreignUuid('created_by_id')->constrained('users', 'id');
+            $table->morphs('imageable');
             $table->timestamps();
         });
     }

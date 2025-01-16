@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Enum\Product\Unit;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Contracts\ImageabeInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Product extends Model
+class Product extends Model implements ImageabeInterface
 {
     use HasUuids;
 
@@ -41,5 +43,13 @@ class Product extends Model
         return [
             'unit' => Unit::class,
         ];
+    }
+
+    /**
+    * @return MorphMany
+    */
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }
