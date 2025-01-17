@@ -22,6 +22,11 @@ describe('customer buy a product', function () {
 
         $product = Product::query()->where('name', 'Buah Apel Impor')->first();
 
+        if ($product->quantity < 20) {
+            $product->quantity = 50;
+            $product->save();
+        }
+
         $customerAuthorizationToken = $this->postJson(route('api.login'), data: [
             'email' => 'one@customer',
             'device_name' => 'testing',

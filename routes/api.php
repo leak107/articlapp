@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\TagController;
@@ -40,4 +41,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/transactions', [TransactionController::class, 'index'])->name('api.transactions.index');
     Route::post('/transactions/{product}', [TransactionController::class, 'store'])->name('api.transactions.store');
+
+    Route::post('/images', [ImageController::class, 'store'])->name('api.images.store');
+    Route::delete('/images/{image}', [ImageController::class, 'destroy'])->name('api.images.destroy');
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\TransactionService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -15,7 +16,7 @@ class TransactionController extends Controller
         //
     }
 
-    public function store(Request $request, Product $product)
+    public function store(Request $request, Product $product): JsonResponse
     {
         $data = $request->validate([
             'quantity' => ['required', 'integer', 'min:1', 'max:' . $product->quantity],

@@ -71,7 +71,7 @@ class PostController extends Controller
     */
     public function destroy(Post $post): JsonResponse
     {
-        throw_if($post->author->id != auth()->id(), new Exception('You are not allowed', 403));
+        throw_if($post->author->id != $this->getAuthenticatedUser()->id, new Exception('You are not allowed', 403));
 
         $post->delete();
 

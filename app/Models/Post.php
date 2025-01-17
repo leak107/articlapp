@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Contracts\ImageabeInterface;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Contracts\ImageableInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,15 +11,23 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
 
 /**
+ * @property-read string $id
  * @property string $slug
  * @property string $title
  * @property string $content
  * @property string $created_by_id
  *
  */
-class Post extends Model implements ImageabeInterface
+class Post extends Model implements ImageableInterface
 {
     use HasUuids;
+
+    protected $fillable = [
+        'title',
+        'slug',
+        'content',
+        'created_by_id',
+    ];
 
     /**
     * @return BelongsTo

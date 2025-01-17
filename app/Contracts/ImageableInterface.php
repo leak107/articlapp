@@ -4,7 +4,7 @@ namespace App\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-interface ImageabeInterface
+interface ImageableInterface
 {
     public function images(): MorphMany;
 }

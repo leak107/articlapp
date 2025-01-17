@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enum\Product\Unit;
-use App\Contracts\ImageabeInterface;
+use App\Contracts\ImageableInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
+ * @property-read string $id
  * @property string $name
  * @property float $price
  * @property Unit $unit
@@ -18,9 +19,17 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property string $created_by_id
  *
  */
-class Product extends Model implements ImageabeInterface
+class Product extends Model implements ImageableInterface
 {
     use HasUuids;
+
+    protected $fillable = [
+        'name',
+        'price',
+        'unit',
+        'quantity',
+        'created_by_id'
+    ];
 
     /**
     * @return BelongsTo

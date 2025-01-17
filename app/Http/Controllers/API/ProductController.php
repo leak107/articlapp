@@ -71,7 +71,7 @@ class ProductController extends Controller
     */
     public function destroy(Product $product): JsonResponse
     {
-        throw_if($product->author->id != auth()->id(), new Exception('You are not allowed', 403));
+        throw_if($product->author->id != $this->getAuthenticatedUser()->id, new Exception('You are not allowed', 403));
 
         $product->delete();
 
