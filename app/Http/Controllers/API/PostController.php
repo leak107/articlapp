@@ -8,13 +8,14 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\StoreRequest;
 use App\Http\Requests\Post\UpdateRequest;
+use Exception;
 
 class PostController extends Controller
 {
     public function __construct(
         protected PostService $service
     ) {
-
+        //
     }
 
     /**
@@ -72,6 +73,8 @@ class PostController extends Controller
     */
     public function destroy(Post $post): JsonResponse
     {
+        throw_if($post->author->id != auth()->id(), new Exception('You are not allowed', 403));
+
         $post->delete();
 
         return $this->json([

@@ -9,28 +9,24 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property string $name
+ * @property float $price
+ * @property Unit $unit
+ * @property int $quantity
+ * @property string $created_by_id
+ *
+ */
 class Product extends Model implements ImageabeInterface
 {
     use HasUuids;
-
-    /**
-    * @var
-    *
-    */
-    protected $fillable = [
-        'name',
-        'price',
-        'unit',
-        'quantity',
-        'created_by_id',
-    ];
 
     /**
     * @return BelongsTo
     */
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'creator_by_id');
+        return $this->belongsTo(User::class, 'created_by_id');
     }
 
     /**

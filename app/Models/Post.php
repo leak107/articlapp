@@ -46,7 +46,7 @@ class Post extends Model implements ImageabeInterface
     {
         $slug = Str::slug($title);
 
-        if ($counter = static::query()->where('slug', $slug)->count()) {
+        if ($counter = static::query()->where('slug', 'like', '%' . $slug . '%')->count()) {
             $slug = $slug . '-' . $counter;
         }
 

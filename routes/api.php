@@ -17,11 +17,17 @@ Route::post('/login', function (Request $request) {
     ]);
 
     if ($user = User::query()->where('email', $data['email'])->first()) {
-        return $user->createToken($data['device_name'])->plainTextToken;
+        if ($token = $user->tokens()->where('name', $data['device_name'])->first()) {
+            $token->delete();
+        }
+
+        return [
+            'token' => $user->createToken($data['device_name'])->plainTextToken,
+        ];
     }
 
     return false;
-});
+})->name('api.login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('products', ProductController::class, ['names' => 'api.products'])->except(['create', 'edit', 'show']);
