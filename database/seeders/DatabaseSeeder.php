@@ -22,6 +22,22 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        if (User::query()->where('email', 'one@customer')->doesntExist()) {
+            User::factory()->create([
+                'first_name' => 'One',
+                'last_name' => 'Customer',
+                'email' => 'one@customer',
+            ]);
+        }
+
+        if (User::query()->where('email', 'two@customer')->doesntExist()) {
+            User::factory()->create([
+                'first_name' => 'Two',
+                'last_name' => 'Customer',
+                'email' => 'two@customer',
+            ]);
+        }
+
         foreach(range(0, 9) as $i) {
             Tag::query()->create([
                 'name' => fake()->word(),

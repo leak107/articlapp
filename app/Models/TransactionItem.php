@@ -6,19 +6,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $quantity
+ * @property int $quantity_before
+ * @property int $quantity_after
+ * @property float $total_amount
+ * @property string $product_id
+ * @property string $transaction_id
+ * @property string $created_by_id
+ */
 class TransactionItem extends Model
 {
     use HasUuids;
-
-    protected $fillable = [
-        'quantity',
-        'quantity_before',
-        'quantity_after',
-        'total_amount',
-        'product_id',
-        'transaction_id',
-        'created_by_id',
-    ];
 
     /**
     * @return BelongsTo

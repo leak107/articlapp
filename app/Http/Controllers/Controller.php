@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 abstract class Controller
@@ -18,5 +19,13 @@ abstract class Controller
             'payload' => $payload,
             'message' => $message,
         ]);
+    }
+
+    /**
+    * @return User
+    */
+    public function getAuthenticatedUser(): User
+    {
+        return request()->user();
     }
 }

@@ -7,19 +7,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property Type $type
+ * @property string $customer_email
+ * @property string $customer_name
+ * @property float $total_amount
+ * @property string $supplier_name
+ * @property string $notes
+ * @property string $created_by_id
+ */
 class Transaction extends Model
 {
     use HasUuids;
-
-    protected $fillable = [
-        'type',
-        'customer_email',
-        'customer_name',
-        'total_amount',
-        'supplier_name',
-        'notes',
-        'created_by_id',
-    ];
 
     /**
     * @return BelongsTo
