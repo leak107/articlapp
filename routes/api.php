@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\TagController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,7 @@ Route::post('/login', function (Request $request) {
 })->name('api.login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::resource('tags', TagController::class, ['names' => 'api.tags'])->only('index');
     Route::resource('products', ProductController::class, ['names' => 'api.products'])->except(['create', 'edit', 'show']);
     Route::resource('posts', PostController::class, ['names' => 'api.posts'])->except(['create', 'edit', 'show'])->scoped([
         'post' => 'slug'

@@ -25,9 +25,7 @@ class ProductController extends Controller
     {
         $products = $this->service->indexQuery()->paginate(10);
 
-        return response()->json([
-            'payload' => $products
-        ]);
+        return $this->json($products);
     }
 
     /**

@@ -23,7 +23,8 @@ class UpdateRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['required', 'string']
+            'content' => ['required', 'string'],
+            'tags' => ['nullable', 'array'],
         ];
     }
 }

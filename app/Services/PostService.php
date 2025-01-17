@@ -3,11 +3,8 @@
 namespace App\Services;
 
 use App\Models\Post;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-
-use function Pest\Laravel\post;
 
 class PostService
 {
@@ -52,11 +49,8 @@ class PostService
     */
     public function update(Post $post, array $data): Post
     {
-        if ($post->title != $data['title']) {
-            $data['slug'] = Post::generateSlug($data['title']);
-        }
-
         $data['author_id'] = $post->created_by_id;
+        $data['slug'] = $post->title == $data['title'] ? $post->slug : Post::generateSlug($data['title']);
 
         return $this->createOrUpdatePost(
             data: $data,
@@ -80,6 +74,10 @@ class PostService
         $post->created_by_id = $data['author_id'];
 
         $post->save();
+
+        if (array_key_exists('tags', $data)) {
+            $post->tags()->sync($data['tags']);
+        }
 
         return $post;
     }

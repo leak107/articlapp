@@ -7,12 +7,12 @@ use Illuminate\Http\JsonResponse;
 abstract class Controller
 {
     /**
-    * @param array $payload
+    * @param mixed $payload
     * @param string $message
     *
     * @return JsonResponse
     */
-    public function json(array $payload = [], $message = ''): JsonResponse
+    public function json(mixed $payload = [], $message = ''): JsonResponse
     {
         return response()->json([
             'payload' => $payload,

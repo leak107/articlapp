@@ -71,6 +71,10 @@ class ProductService
 
         $product->save();
 
+        if (array_key_exists('tags', $data)) {
+            $product->tags()->sync($data['tags']);
+        }
+
         return $product;
     }
 

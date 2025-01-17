@@ -30,7 +30,7 @@ describe('post api test', function () {
 
         $slug = Post::generateSlug($title);
 
-        $response = $this->postJson(
+        $this->postJson(
             uri: route('api.posts.store'),
             headers: [
                 'Authorization' => 'Bearer ' . $authorizationToken,
@@ -60,7 +60,7 @@ describe('post api test', function () {
 
         $slug = Post::generateSlug($title);
 
-        $response = $this->postJson(
+        $this->postJson(
             uri: route('api.posts.store'),
             headers: [
                 'Authorization' => 'Bearer ' . $authorizationToken,
@@ -77,7 +77,7 @@ describe('post api test', function () {
         $title = 'when duck fly bird drop';
         $newSlug = Post::generateSlug($title);
 
-        $response = $this->putJson(route('api.posts.update', $slug), [
+        $this->putJson(route('api.posts.update', $slug), [
             'title' => $title,
             'content' => $post->content
         ])->assertOk();
@@ -101,7 +101,7 @@ describe('post api test', function () {
 
         $slug = Post::generateSlug($title);
 
-        $response = $this->postJson(
+        $this->postJson(
             uri: route('api.posts.store'),
             headers: [
                 'Authorization' => 'Bearer ' . $authorizationToken,
@@ -114,8 +114,92 @@ describe('post api test', function () {
 
         expect(Post::query()->count())->toBe($amount + 1);
 
-        $response = $this->deleteJson(route('api.posts.destroy', $slug), headers: ['Authorization' => 'Bearer ' . $authorizationToken])->assertOk();
+        $this->deleteJson(route('api.posts.destroy', $slug), headers: ['Authorization' => 'Bearer ' . $authorizationToken])->assertOk();
 
         expect(Post::query()->count())->toBe($amount);
+    });
+
+    it('can attach tags into post', function () {
+        /** @var TestCase $this **/
+        $authorizationToken = $this->postJson(route('api.login'), [
+            'email' => 'admin@article.app',
+            'device_name' => 'testing'
+        ])['token'];
+
+        $title = fake()->sentence();
+        $content = fake()->sentence();
+
+        $slug = Post::generateSlug($title);
+
+        $tags = $this->getJson(route('api.tags.index'), ['Authorization' => 'Bearer ' . $authorizationToken])->json()['payload'];
+
+        $selectedTags = collect($tags)->random(4)->pluck('id')->toArray();
+
+        $this->postJson(
+            uri: route('api.posts.store'),
+            headers: [
+                'Authorization' => 'Bearer ' . $authorizationToken,
+            ],
+            data: [
+                'title' => $title,
+                'content' => $content,
+                'tags' => $selectedTags,
+            ]
+        )->assertOk();
+
+        $post = Post::query()->where('slug', $slug)->first();
+
+        expect($selectedTags)->toBe($post->tags->pluck('id')->toArray());
+    });
+
+    it('can update tags into post', function () {
+        /** @var TestCase $this **/
+        $authorizationToken = $this->postJson(route('api.login'), [
+            'email' => 'admin@article.app',
+            'device_name' => 'testing'
+        ])['token'];
+
+        $title = fake()->sentence();
+        $content = fake()->sentence();
+
+        $slug = Post::generateSlug($title);
+
+        $tags = $this->getJson(route('api.tags.index'), ['Authorization' => 'Bearer ' . $authorizationToken])->json()['payload'];
+
+        $selectedTags = collect($tags)->random(4)->pluck('id')->toArray();
+
+        $this->postJson(
+            uri: route('api.posts.store'),
+            headers: [
+                'Authorization' => 'Bearer ' . $authorizationToken,
+            ],
+            data: [
+                'title' => $title,
+                'content' => $content,
+                'tags' => $selectedTags,
+            ]
+        )->assertOk();
+
+        $post = Post::query()->where('slug', $slug)->first();
+
+        expect($selectedTags)->toBe($post->tags->pluck('id')->toArray());
+
+        $this->putJson(
+            uri: route('api.posts.update', $slug),
+            headers: [
+                'Authorization' => 'Bearer ' . $authorizationToken,
+            ],
+            data: [
+                'title' => $title,
+                'content' => $content,
+                'tags' => [1, 2],
+            ]
+        )->assertOk();
+
+        $post->refresh();
+
+        foreach ($post->tags as $tag) {
+            expect(in_array($tag->id, [1, 2]))->toBeTrue();
+        }
     });
 });

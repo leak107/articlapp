@@ -24,10 +24,11 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', Rule::unique('products')->ignore($this->route('product'))],
             'price' => ['required', 'regex:/^\d{1,12}(\.\d{1,2})?$/'],
             'unit' => ['required', Rule::in(Unit::cases())],
             'quantity' => ['required', 'integer'],
+            'tags' => ['nullable', 'array'],
         ];
     }
 }

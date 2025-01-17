@@ -82,8 +82,7 @@ describe('product api test', function () {
 
         $amount = Product::query()->count();
 
-        $currentUnixTime = now()->unix();
-        $productName = 'Product-2';
+        $productName = 'Product-9';
 
         $this->postJson(route('api.products.store'), headers: ['Authorization' => 'Bearer ' . $authorizationToken], data: [
             'name' => $productName,
@@ -99,5 +98,83 @@ describe('product api test', function () {
         $this->deleteJson(route('api.products.destroy', $product->id), headers: ['Authorization' => 'Bearer ' . $authorizationToken])->assertOk();
 
         expect(Product::query()->count())->toBe($amount);
+    });
+
+    it('can attach tags into product', function () {
+        /** @var TestCase $this **/
+        $authorizationToken = $this->postJson(route('api.login'), [
+            'email' => 'admin@article.app',
+            'device_name' => 'testing'
+        ])['token'];
+
+        $amount = Product::query()->count();
+
+        $productName = fake()->sentence();
+
+        $tags = $this->getJson(route('api.tags.index'), ['Authorization' => 'Bearer ' . $authorizationToken])->json()['payload'];
+
+        $selectedTags = collect($tags)->random(4)->pluck('id')->toArray();
+
+        $this->postJson(route('api.products.store'), headers: ['Authorization' => 'Bearer ' . $authorizationToken], data: [
+            'name' => $productName,
+            'price' => 15000.00,
+            'unit' => Unit::KILOGRAM->value,
+            'quantity' => 20,
+            'tags' => $selectedTags
+        ])->assertOk();
+
+        expect(Product::query()->count())->toBe($amount + 1);
+
+        $product = Product::query()->where('name', $productName)->first();
+
+        expect($product->tags->pluck('id')->toArray())->toBe($selectedTags);
+
+        $product->delete();
+    });
+
+    it('can update tags into product', function () {
+        /** @var TestCase $this **/
+        $authorizationToken = $this->postJson(route('api.login'), [
+            'email' => 'admin@article.app',
+            'device_name' => 'testing'
+        ])['token'];
+
+        $amount = Product::query()->count();
+
+        $productName = fake()->sentence();
+
+        $tags = $this->getJson(route('api.tags.index'), ['Authorization' => 'Bearer ' . $authorizationToken])->json()['payload'];
+
+        $selectedTags = collect($tags)->random(4)->pluck('id')->toArray();
+
+        $this->postJson(route('api.products.store'), headers: ['Authorization' => 'Bearer ' . $authorizationToken], data: [
+            'name' => $productName,
+            'price' => 15000.00,
+            'unit' => Unit::KILOGRAM->value,
+            'quantity' => 20,
+            'tags' => $selectedTags
+        ])->assertOk();
+
+        expect(Product::query()->count())->toBe($amount + 1);
+
+        $product = Product::query()->where('name', $productName)->first();
+
+        expect($product->tags->pluck('id')->toArray())->toBe($selectedTags);
+
+        $this->putJson(route('api.products.update', $product->id), headers: ['Authorization' => 'Bearer ' . $authorizationToken], data: [
+            'name' => 'New Product 101',
+            'price' => 15000.00,
+            'unit' => Unit::KILOGRAM->value,
+            'quantity' => 20,
+            'tags' => [1, 2],
+        ])->assertOk();
+
+        $product->refresh();
+
+        foreach ($product->tags as $tag) {
+            expect(in_array($tag->id, [1, 2]))->toBeTrue();
+        }
+
+        $product->delete();
     });
 });

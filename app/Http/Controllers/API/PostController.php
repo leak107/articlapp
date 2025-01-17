@@ -25,9 +25,7 @@ class PostController extends Controller
     {
         $posts = $this->service->indexQuery()->paginate(10);
 
-        return response()->json([
-            'payload' => $posts
-        ]);
+        return $this->json($posts);
     }
 
     /**

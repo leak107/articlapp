@@ -35,10 +35,11 @@ class StoreRequest extends FormRequest
     {
         return [
             'author_id' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:products,name'],
             'price' => ['required', 'regex:/^\d{1,12}(\.\d{1,2})?$/'],
             'unit' => ['required', Rule::in(Unit::cases())],
             'quantity' => ['required', 'integer'],
+            'tags' => ['nullable', 'array'],
         ];
     }
 }
